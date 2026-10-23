@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ikebana — Font tester</title>
+  <meta name="description" content="A simple space to try the Ikebana typeface.">
+  <style>
+    @font-face { font-family: Ikebana; src: url('./assets/ikebana-Regular-ed9f61551aef.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
+    * { box-sizing: border-box; }
+    :root { color-scheme: light; font-family: Arial, Helvetica, sans-serif; color: #252522; background: #faf9f6; }
+    body { margin: 0; }
+    main { max-width: 1440px; margin: auto; padding: 42px 56px; }
+    header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 48px; }
+    h1 { font-size: 16px; font-weight: 500; margin: 0; letter-spacing: -.3px; }
+    .meta, label, .preview-label { font-size: 11px; color: #77766f; }
+    .meta { letter-spacing: .02em; }
+    .input-label { display: block; margin-bottom: 12px; }
+    textarea { display: block; width: 100%; height: 110px; resize: vertical; border: 1px solid #deddd7; border-radius: 3px; padding: 18px; font: 14px/1.6 Arial, Helvetica, sans-serif; color: #252522; background: transparent; }
+    textarea::placeholder { color: #9a9992; }
+    :focus-visible { outline: 2px solid #69685e; outline-offset: 4px; }
+    .controls { display: flex; flex-wrap: wrap; gap: 24px 38px; align-items: center; padding: 24px 0 28px; border-bottom: 1px solid #deddd7; }
+    .control { display: flex; align-items: center; gap: 14px; }
+    input[type=range] { width: 144px; height: 2px; accent-color: #393932; cursor: pointer; }
+    .number { display: flex; align-items: baseline; gap: 4px; color: #77766f; font-size: 11px; }
+    input[type=number] { width: 40px; padding: 4px 0; border: 0; border-bottom: 1px solid #deddd7; border-radius: 0; background: transparent; color: #252522; font: 12px Arial, Helvetica, sans-serif; text-align: right; appearance: textfield; -moz-appearance: textfield; }
+    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    input[type=color] { width: 24px; height: 24px; border: 1px solid #deddd7; border-radius: 50%; padding: 3px; background: transparent; cursor: pointer; }
+    input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type=color]::-webkit-color-swatch { border: 0; border-radius: 50%; }
+    input[type=color]::-moz-color-swatch { border: 0; border-radius: 50%; }
+    .hex { font-size: 11px; font-variant-numeric: tabular-nums; color: #77766f; }
+    .preview-label { display: block; margin-top: 28px; }
+    #preview { margin: 34px 0 70px; font-family: Ikebana, serif; font-size: 96px; font-weight: 400; line-height: 1.25; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 240px; }
+    #font-status { color: #a34636; font-size: 12px; }
+    #preview { position: relative; cursor: text; }
+    #kerning-value { min-width: 42px; font: 11px Arial, Helvetica, sans-serif; color: #77766f; }
+    input:disabled { opacity: .35; cursor: default; }
+    button { border: 0; background: transparent; padding: 4px 0; font: 11px Arial, Helvetica, sans-serif; color: #77766f; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+    button:disabled { opacity: .35; cursor: default; }
+    .preview-heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 24px; margin-top: 28px; }
+    .preview-heading .preview-label { margin: 0; }
+    #kerning-hint { font: 11px/1.5 Arial, Helvetica, sans-serif; color: #77766f; }
+    .pot-extension { position: absolute; background: currentColor; pointer-events: none; }
+    #caret { position: absolute; z-index: 1; width: 1px; background: #56766b; pointer-events: none; }
+    #caret::before { content: ''; position: absolute; left: -2px; top: -3px; width: 5px; height: 5px; border-radius: 50%; background: #56766b; }
+    @media (max-width: 600px) {
+      main { padding: 28px 22px; }
+      header { margin-bottom: 36px; }
+      .controls { gap: 22px; flex-wrap: wrap; }
+      input[type=range] { width: 105px; }
+      #preview { margin-top: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header><h1>Ikebana</h1><span class="meta">Regular · Font tester</span></header>
+    <label class="input-label" for="text">Your text</label>
+    <textarea id="text" placeholder="Type something here…" spellcheck="false" autocapitalize="off">the art of arranging flowers.</textarea>
+    <div class="controls">
+      <div class="control">
+        <label for="size">Size</label>
+        <input id="size" type="range" min="12" max="240" value="96" aria-label="Text size">
+        <div class="number"><input id="size-number" type="number" min="12" max="240" value="96" aria-label="Text size in pixels"><span>px</span></div>
+      </div>
+      <div class="control">
+        <label for="color">Color</label>
+        <input id="color" type="color" value="#252522">
+        <span id="hex" class="hex">#252522</span>
+      </div>
+      <div class="control">
+        <label for="kerning">Kerning</label>
+        <input id="kerning" type="range" min="-60" max="100" step="1" value="0" disabled aria-label="Selected pair kerning" aria-describedby="kerning-hint">
+        <output id="kerning-value" for="kerning">0 px</output>
+        <button id="reset-kerning" type="button" disabled>Reset</button>
+      </div>
+    </div>
+    <div class="preview-heading">
+      <span class="preview-label">Preview</span>
+      <span id="kerning-hint" role="status">Click between letters to adjust kerning.</span>
+    </div>
+    <p id="font-status" role="status" hidden></p>
+    <div id="preview" tabindex="0" role="group" aria-label="Font preview. Click between letters or use the left and right arrow keys to select a pair." aria-describedby="kerning-hint">the art of arranging flowers.</div>
+  </main>
+  <script>
+    const text = document.getElementById('text');
+    const preview = document.getElementById('preview');
+    const size = document.getElementById('size');
+    const number = document.getElementById('size-number');
+    const color = document.getElementById('color');
+    const kerning = document.getElementById('kerning');
+    const kerningValue = document.getElementById('kerning-value');
+    const hint = document.getElementById('kerning-hint');
+    const reset = document.getElementById('reset-kerning');
+    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+    let letters = [], glyphs = [], spacing = new Map(), selected = null, caret;
+    // Rectangle bounds measured from this font's outlines: left, right, bottom, top.
+    // Font units: 2048 per em; horizontal ascender: 1550.
+    const potBounds = {
+      ',': [-164,94,-1,198], '.': [-192,267,0,200], a: [3,848,0,200],
+      b: [-7,1013,0,199], c: [-24,849,0,200], d: [-9,1027,0,200],
+      e: [33,1027,0,200], f: [-95,826,0,200], g: [-140,944,-3,197],
+      h: [-40,1055,0,194], i: [-48,862,0,194], j: [-22,947,0,194],
+      k: [-26,950,0,194], l: [28,616,0,194], m: [-10,1211,0,194],
+      n: [-64,750,0,194], o: [-40,992,0,200], p: [-5,946,0,200],
+      q: [-145,805,0,200], r: [-27,816,0,200], s: [-9,878,0,200],
+      t: [-124,887,0,200], u: [12,817,0,200], v: [6,1101,0,200],
+      w: [-61,1034,3,203], x: [-84,728,3,203], y: [-51,788,0,200],
+      z: [-92,722,0,200]
+    };
+    function positionPotExtensions() {
+      preview.querySelectorAll('.pot-extension').forEach(element => element.remove());
+      if (!document.fonts.check('96px Ikebana')) return;
+      const bounds = preview.getBoundingClientRect();
+      const scale = parseFloat(getComputedStyle(preview).fontSize) / 2048;
+      const fragment = document.createDocumentFragment();
+      for (const [index, gap] of spacing) {
+        if (gap <= 0 || !validPair(index)) continue;
+        const a = potBounds[letters[index]], b = potBounds[letters[index + 1]];
+        // Spaces, unsupported glyphs and line breaks do not have joining pots.
+        if (!a || !b) continue;
+        const left = glyphs[index].getBoundingClientRect();
+        const right = glyphs[index + 1].getBoundingClientRect();
+        if (Math.abs(left.top - right.top) > 2) continue;
+        const start = left.left + a[1] * scale;
+        const end = right.left + b[0] * scale;
+        if (end <= start) continue;
+        const top = Math.min(a[3], b[3]), bottom = Math.max(a[2], b[2]);
+        const extension = document.createElement('span');
+        extension.className = 'pot-extension';
+        extension.setAttribute('aria-hidden', 'true');
+        extension.style.left = (start - bounds.left - .5) + 'px';
+        extension.style.top = (left.top - bounds.top + (1550 - top) * scale) + 'px';
+        extension.style.width = (end - start + 1) + 'px';
+        extension.style.height = ((top - bottom) * scale) + 'px';
+        fragment.append(extension);
+      }
+      preview.append(fragment);
+    }
+    function positionDecorations() {
+      positionPotExtensions();
+      positionCaret();
+    }
+    const validPair = index => Number.isInteger(index) && index >= 0 && index < letters.length - 1 && !/[\r\n]/.test(letters[index] + letters[index + 1]);
+    function pairPoints(index) {
+      const left = glyphs[index].getBoundingClientRect();
+      const right = glyphs[index + 1].getBoundingClientRect();
+      if (Math.abs(left.top - right.top) < 2) {
+        return [{ x: (left.right + right.left) / 2, y: left.top, height: left.height }];
+      }
+      return [{ x: left.right, y: left.top, height: left.height }, { x: right.left, y: right.top, height: right.height }];
+    }
+    function positionCaret() {
+      caret.hidden = selected === null;
+      if (selected === null) return;
+      const point = pairPoints(selected)[0];
+      const bounds = preview.getBoundingClientRect();
+      const height = Math.min(point.height, parseFloat(getComputedStyle(preview).fontSize));
+      caret.style.left = (point.x - bounds.left) + 'px';
+      caret.style.top = (point.y - bounds.top + (point.height - height) / 2) + 'px';
+      caret.style.height = height + 'px';
+    }
+    function selectPair(index) {
+      selected = validPair(index) ? index : null;
+      kerning.disabled = selected === null;
+      const value = spacing.get(selected) || 0;
+      kerning.value = value;
+      kerningValue.value = (value > 0 ? '+' : '') + value + ' px';
+      reset.disabled = selected === null || value === 0;
+      const display = letter => letter === ' ' ? 'space' : letter;
+      hint.textContent = selected === null ? 'Click between letters to adjust kerning.' : `${display(letters[selected])} | ${display(letters[selected + 1])} · Drag the slider to adjust this pair.`;
+      positionCaret();
+    }
+    function renderText() {
+      // Use lowercase glyphs and retain adjustments around unchanged text.
+      const next = Array.from(segmenter.segment(text.value.toLowerCase()), item => item.segment);
+      let prefix = 0, suffix = 0;
+      while (prefix < Math.min(letters.length, next.length) && letters[prefix] === next[prefix]) prefix++;
+      while (suffix < Math.min(letters.length, next.length) - prefix && letters[letters.length - 1 - suffix] === next[next.length - 1 - suffix]) suffix++;
+      const kept = new Map();
+      for (const [index, value] of spacing) {
+        if (index + 1 < prefix) kept.set(index, value);
+        else if (index >= letters.length - suffix) kept.set(index + next.length - letters.length, value);
+      }
+      spacing = kept;
+      letters = next;
+      const fragment = document.createDocumentFragment();
+      glyphs = letters.map((letter, index) => {
+        const span = document.createElement('span');
+        span.textContent = letter;
+        span.style.marginRight = (spacing.get(index) || 0) + 'px';
+        fragment.append(span);
+        return span;
+      });
+      caret = document.createElement('span');
+      caret.id = 'caret';
+      caret.setAttribute('aria-hidden', 'true');
+      fragment.append(caret);
+      preview.replaceChildren(fragment);
+      selectPair(null);
+      positionPotExtensions();
+    }
+    preview.addEventListener('click', event => {
+      let closest = null, distance = Infinity;
+      for (let index = 0; index < letters.length - 1; index++) {
+        if (!validPair(index)) continue;
+        for (const point of pairPoints(index)) {
+          const dx = event.clientX - point.x;
+          const dy = event.clientY - (point.y + point.height / 2);
+          const score = dx * dx + 4 * dy * dy;
+          if (score < distance) { distance = score; closest = index; }
+        }
+      }
+      selectPair(closest);
+    });
+    preview.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { selectPair(null); return; }
+      if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+      event.preventDefault();
+      const direction = event.key === 'ArrowRight' ? 1 : -1;
+      let index = selected === null ? (direction === 1 ? 0 : letters.length - 2) : selected + direction;
+      while (index >= 0 && index < letters.length - 1 && !validPair(index)) index += direction;
+      if (validPair(index)) selectPair(index);
+    });
+    function applyKerning(value) {
+      if (selected === null) return;
+      if (value === 0) spacing.delete(selected); else spacing.set(selected, value);
+      glyphs[selected].style.marginRight = value + 'px';
+      selectPair(selected);
+      positionPotExtensions();
+    }
+    kerning.addEventListener('input', () => applyKerning(Number(kerning.value)));
+    reset.addEventListener('click', () => applyKerning(0));
+    text.addEventListener('input', renderText);
+    new ResizeObserver(positionDecorations).observe(preview);
+    document.fonts.ready.then(positionDecorations);
+    renderText();
+    function setSize(value) {
+      const pixels = Math.min(240, Math.max(12, Number(value) || 96));
+      size.value = number.value = pixels;
+      preview.style.fontSize = pixels + 'px';
+      positionDecorations();
+    }
+    size.addEventListener('input', () => setSize(size.value));
+    number.addEventListener('input', () => {
+      if (number.value !== '' && number.validity.valid) setSize(number.value);
+    });
+    number.addEventListener('change', () => setSize(number.value));
+    color.addEventListener('input', () => {
+      preview.style.color = color.value;
+      document.getElementById('hex').textContent = color.value;
+    });
+    document.fonts.load('96px Ikebana').catch(() => {
+      const status = document.getElementById('font-status');
+      status.hidden = false;
+      status.textContent = 'The font could not load. Refresh to try again.';
+    });
+  </script>
+</body>
+</html>
